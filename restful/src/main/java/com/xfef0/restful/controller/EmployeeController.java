@@ -1,5 +1,6 @@
 package com.xfef0.restful.controller;
 
+import com.xfef0.restful.assembler.EmployeeModelAssembler;
 import com.xfef0.restful.entity.Employee;
 import com.xfef0.restful.exception.EmployeeNotFoundException;
 import com.xfef0.restful.repository.EmployeeRepository;
@@ -23,40 +24,39 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class EmployeeController {
 
     private final EmployeeRepository repository;
+    private final EmployeeModelAssembler assembler;
 
-    public EmployeeController(EmployeeRepository repository) {
+    public EmployeeController(EmployeeRepository repository, EmployeeModelAssembler assembler) {
         this.repository = repository;
+        this.assembler = assembler;
     }
 
     @GetMapping("/employees")
     public CollectionModel<EntityModel<Employee>> all() {
         List<EntityModel<Employee>> employees = repository.findAll().stream()
-                .map(employee -> EntityModel.of(employee,
-                        linkTo(methodOn(EmployeeController.class).one(employee.getId())).withSelfRel(),
-                        linkTo(methodOn(EmployeeController.class).all()).withRel("employees")))
+                .map(assembler::toModel)
                 .collect(Collectors.toList());
         return CollectionModel.of(employees,
                 linkTo(methodOn(EmployeeController.class).all()).withSelfRel());
     }
 
     @PostMapping("/employees")
-    public Employee newEmployee(@RequestBody Employee newEmployee) {
-        return repository.save(newEmployee);
+    public EntityModel<Employee> newEmployee(@RequestBody Employee newEmployee) {
+        Employee employee = repository.save(newEmployee);
+        return assembler.toModel(employee);
     }
 
     @GetMapping("/employees/{id}")
     public EntityModel<Employee> one(@PathVariable Long id) {
         Employee employee = repository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
-        return EntityModel.of(employee,
-                linkTo(methodOn(EmployeeController.class).one(id)).withSelfRel(),
-                linkTo(methodOn(EmployeeController.class).all()).withRel("employees"));
+        return assembler.toModel(employee);
     }
 
     @PutMapping("/employees/{id}")
-    public Employee replaceEmployee(@RequestBody Employee newEmployee,
+    public EntityModel<Employee> replaceEmployee(@RequestBody Employee newEmployee,
                                     @PathVariable Long id) {
-        return repository.findById(id)
+        Employee resultEmployee = repository.findById(id)
                 .map(
                         employee -> {
                             employee.setName(newEmployee.getName());
@@ -70,6 +70,7 @@ public class EmployeeController {
                             return repository.save(newEmployee);
                         }
                 );
+        return assembler.toModel(resultEmployee);
     }
 
     @DeleteMapping("/employees/{id}")
