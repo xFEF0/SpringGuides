@@ -4,15 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { AppService } from './app.service';
+import { AppComponent } from './app.component';
 import { HomeComponent } from './home.component';
 import { LoginComponent } from './login.component';
-import { AppComponent } from './app.component';
+import { Injectable } from '@angular/core';
+import {
+  HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS
+} from '@angular/common/http';
 
-const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'home'},
-  { path: 'home', component: HomeComponent},
-  { path: 'login', component: LoginComponent}
-];
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -24,6 +24,12 @@ export class XhrInterceptor implements HttpInterceptor {
     return next.handle(xhr);
   }
 }
+
+const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'home'},
+  { path: 'home', component: HomeComponent},
+  { path: 'login', component: LoginComponent}
+];
 
 @NgModule({
   declarations: [
@@ -37,7 +43,7 @@ export class XhrInterceptor implements HttpInterceptor {
     HttpClientModule,
     FormsModule
   ],
-  providers: [AppService, { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true}],
+  providers: [AppService, { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 

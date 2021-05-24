@@ -5,12 +5,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class AppService {
   authenticated = false;
 
-  constructor (private http: HttpClient) {
+  constructor(private http: HttpClient) {
   }
 
-  authenticate (credentials, callback) {
+  authenticate(credentials, callback) {
     const headers = new HttpHeaders(credentials ? {
-      authorization : 'Basic ' + bota(credentials.username + ':' + credentials.password)
+      authorization : 'Basic ' + btoa(credentials.username + ':' + credentials.password)
     } : {});
     this.http.get('user', {headers: headers})
       .subscribe(response => {
