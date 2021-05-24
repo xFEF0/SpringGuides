@@ -76,3 +76,12 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# From Angular Project
+.browserslistrc
+.editorconfig
+.mvn/
+mvnw
+mvnw.cmd
+node/
+node_modules/
