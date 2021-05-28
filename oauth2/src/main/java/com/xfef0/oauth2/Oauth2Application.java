@@ -37,6 +37,9 @@ public class Oauth2Application extends WebSecurityConfigurerAdapter {
 		.exceptionHandling(
 				e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
 		)
+		.logout(
+				l -> l.logoutSuccessUrl("/").permitAll()
+		)
 		.oauth2Login();
 	}
 
