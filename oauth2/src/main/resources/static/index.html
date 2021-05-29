@@ -10,7 +10,9 @@
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.js"
+            integrity="sha512-JjYSgzqo9K0IeYGEslMRYE8aO9tq7Ky3EQNmEVkAe6Cp14AwlJMLMnb0fpgEkr3YxJ8ghQiriOvZwIdRZieGIQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
         $.get("/user", function(data) {
             $("#user").html(data.name);
@@ -33,6 +35,7 @@
     <div class="container"></div>
     <div class="container unauthenticated">
         With GitHub: <a href="/oauth2/authorization/github">click here</a>
+        With Google: <a href="/oauth2/authorization/google">click here</a>
     </div>
     <div class="container authenticated" style="display:none">
         Logged in as: <span id="user"></span>
